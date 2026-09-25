@@ -35,4 +35,65 @@ def listar():
     for p in dados["produtos"]:
         print(f'{p["id"]} - {p["nome"]} - R$ {p["preco"]:.2f} - Estoque: {p["estoque"]}')
 
+def pedido():
+    nome_cliente = input("Nome do cliente: ")
+    listar()
+
+    id_produto = int(input("ID do produto: "))
+    quantidade = int(input("Quantidade: "))
+
+    for p in dados["produtos"]:
+        if p["id"] == id_produto:
+            if quantidade <= p["estoque"]:
+                total = p["preco"] * quantidade
+                p["estoque"] -= quantidade
+
+                dados["pedidos"].append({
+                    "cliente": nome_cliente,
+                    "produto": p["nome"],
+                    "quantidade": quantidade,
+                    "total": total,
+                    "data": datetime.now().strftime("%d/%m/%Y %H:%M")
+                })
+
+                salvar()
+                print(f"Pedido realizado! Total: R$ {total:.2f}")
+            else:
+                print("Estoque insuficiente.")
+            return
+
+    print("Produto não encontrado.")
+
+
+while True:
+    print("""
+1 - Cadastrar produto
+2 - Listar produtos
+3 - Fazer pedido
+4 - Ver pedidos
+5 - Sair
+""")
+
+    opcao = input("Opção: ")
+
+    if opcao == "1":
+        cadastrar()
+
+    elif opcao == "2":
+        listar()
+
+    elif opcao == "3":
+        pedido()
+
+    elif opcao == "4":
+        for p in dados["pedidos"]:
+            print(p)
+
+    elif opcao == "5":
+        print("Sistema encerrado.")
+        break
+
+    else:
+        print("Opção inválida.")
+
 
