@@ -1,0 +1,65 @@
+import json
+from datetime import datetime
+
+ARQUIVO = "dados.json"
+
+try:
+    with open(ARQUIVO, "r", encoding="utf-8") as arquivo:
+        dados = json.load(arquivo)
+except FileNotFoundError:
+    dados = {"produtos": [], "pedidos": []}
+
+
+def salvar():
+    with open(ARQUIVO, "w", encoding="utf-8") as arquivo:
+        json.dump(dados, arquivo, ensure_ascii=False, indent=4)
+
+
+def cadastrar():
+    nome = input("Nome: ")
+    preco = float(input("Preço: R$ "))
+    estoque = int(input("Estoque: "))
+
+    dados["produtos"].append({
+        "id": len(dados["produtos"]) + 1,
+        "nome": nome,
+        "preco": preco,
+        "estoque": estoque
+    })
+    salvar()
+    print("Produto cadastrado!")
+
+
+def listar():
+    for p in dados["produtos"]:
+        print(f'{p["id"]} - {p["nome"]} - R$ {p["preco"]:.2f} - Estoque: {p["estoque"]}')
+
+
+def pedido():
+    nome_cliente = input("Nome do cliente: ")
+    listar()
+    id_produto = int(input("ID: "))
+    quantidade = int(input("Quantidade: "))
+
+    for p in dados["produtos"]:
+        if p["id"] == id_produto:
+            if quantidade <= p["estoque"]:
+                total = p["preco"] * quantidade
+                p["estoque"] -= quantidade
+
+                dados["pedidos"].append({
+                    "cliente": nome_cliente,
+                    "produto": p["nome"],
+                    "quantidade": quantidade,
+                    "total": total,
+                    "data": datetime.now().strftime("%d/%m/%Y %H:%M")
+                })
+
+                salvar()
+                print(f"Pedido realizado! Total: R$ {total:.2f}")
+            else:
+                print("Estoque insuficiente.")
+            return
+
+    print("Produto não encontrado.")
+
