@@ -1,0 +1,19 @@
+{
+    "produtos": [
+        {
+            "id": 1,
+            "nome": "x-salada",
+            "preco": 30.0,
+            "estoque": 0
+        }
+    ],
+    "pedidos": [
+        {
+            "id": 1,
+            "produto": "x-salada",
+            "quantidade": 50,
+            "total": 1500.0,
+            "data": "10/09/2026 18:01"
+        }
+    ]
+}
